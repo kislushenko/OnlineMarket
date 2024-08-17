@@ -1,12 +1,10 @@
 package com.online.market.productservice.controller;
 
-import com.online.market.productservice.entity.Product;
+import com.online.market.productservice.dto.ProductDTO;
 import com.online.market.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +16,12 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<ProductDTO>> getProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/{productCode}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("productCode") String productCode) {
+        return ResponseEntity.ok(productService.getProductByCode(productCode));
+    }
 }
