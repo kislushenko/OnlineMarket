@@ -1,5 +1,6 @@
 package com.online.market.orderservice.controller;
 
+import com.online.market.orderservice.dto.CartDTO;
 import com.online.market.orderservice.dto.ItemDTO;
 import com.online.market.orderservice.dto.OrderDTO;
 import com.online.market.orderservice.entity.Cart;
@@ -24,9 +25,9 @@ public class CartController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Cart> getCart(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<CartDTO> getCart(@RequestHeader("Authorization") String token) {
         final String email = jwtUtil.extractEmail(token);
-        return ResponseEntity.ok(cartService.getOrCreateCartForUser(email));
+        return ResponseEntity.ok(cartService.getCartForUser(email));
     }
 
     @PostMapping("/add")

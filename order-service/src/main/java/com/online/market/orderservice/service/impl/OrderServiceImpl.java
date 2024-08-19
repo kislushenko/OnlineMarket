@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         cart.getItems().clear();
+        cart.setTotalPrice(new BigDecimal("0.0"));
         cartRepository.save(cart);
 
 

@@ -1,5 +1,6 @@
 package com.online.market.orderservice.service.impl;
 
+import com.online.market.orderservice.dto.CartDTO;
 import com.online.market.orderservice.dto.ItemDTO;
 import com.online.market.orderservice.entity.Cart;
 import com.online.market.orderservice.entity.Item;
@@ -8,6 +9,7 @@ import com.online.market.orderservice.repository.CartRepository;
 import com.online.market.orderservice.service.CartService;
 import com.online.market.orderservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,18 +21,13 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final ProductService productService;
+    private final ModelMapper modelMapper;
+
 
     @Override
-    public Cart getOrCreateCartForUser(String email) {
-        final Cart cart = cartRepository.findByOwner(email).orElse(null);
-        if (cart == null) {
-            final Cart newCart = new Cart();
-            newCart.setOwner(email);
-            newCart.setTotalPrice(new BigDecimal(0));
-            cartRepository.save(newCart);
-            return newCart;
-        }
-        return cart;
+    public CartDTO getCartForUser(final String email) {
+        final Cart cart = getOrCreateCartForUser(email);
+        return modelMapper.map(cart, CartDTO.class);
     }
 
     //TODO: implement change quantity logic when we add the same product several times
@@ -41,6 +38,18 @@ public class CartServiceImpl implements CartService {
         createCartItem(cart, item);
         updateTotalPrice(cart);
         cartRepository.save(cart);
+    }
+
+    private Cart getOrCreateCartForUser(String email) {
+        final Cart cart = cartRepository.findByOwner(email).orElse(null);
+        if (cart == null) {
+            final Cart newCart = new Cart();
+            newCart.setOwner(email);
+            newCart.setTotalPrice(new BigDecimal(0));
+            cartRepository.save(newCart);
+            return newCart;
+        }
+        return cart;
     }
 
     private void updateTotalPrice(final Cart cart) {
